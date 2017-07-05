@@ -210,10 +210,10 @@ SET "QT_DIR=%WD%output\qt\5.7.1"
 PUSHD qt
     SET "PATH=%WD%qt\gnuwin32\bin;%PATH%"
 
-    CALL configure -mp -static -release -strip -ltcg^
+    CALL configure -mp -static -release -strip -ltcg  -verbose^
  -qt-zlib -qt-pcre -qt-libpng -qt-libjpeg -qt-freetype^
- -qt-sql-sqlite -qt-sql-odbc -icu -opengl desktop -largefile^
- -no-qml-debug -no-dbus -no-audio-backend -no-angle^
+ -sql-sqlite -sql-odbc -icu -opengl desktop -gif -ico^
+ -no-qml-debug -no-dbus -no-angle -optimized-qmake -recheck-all^
  -opensource -confirm-license -make libs -skip qtwebengine^
  -skip qtconnectivity -skip qtserialport -skip qtlocation^
  -skip qtsensors -skip qtgamepad -skip qtdoc -skip qtpurchasing^

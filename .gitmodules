@@ -23,7 +23,7 @@
 	depends = icu openssl zlib sqlite
 	path = qt
 	url = https://github.com/qt/qt5.git
-	branch = 5.7.1
+	branch = 5.9.0
 	status = essential
 [submodule "qtwebkit"]
 	depends = qt
