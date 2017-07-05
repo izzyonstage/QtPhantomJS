@@ -2,31 +2,43 @@
 	path = sqlite
 	url = https://github.com/mackyle/sqlite.git
 	branch = master
+	status = essential
 [submodule "zlib"]
 	path = zlib
 	url = https://github.com/madler/zlib
 	branch = master
+	status = essential
 [submodule "libxml2"]
+	depends = zlib
 	path = libxml2
 	url = https://github.com/GNOME/libxml2.git
 	branch = master
+	status = essential
 [submodule "openssl"]
 	path = openssl
 	url = https://github.com/openssl/openssl.git
 	branch = master
+	status = essential
 [submodule "icu"]
 	path = icu
 	url = https://github.com/qzmfranklin/icu
 	branch = master
+	status = essential
 [submodule "qt"]
+	depends = icu openssl zlib sqlite
 	path = qt
 	url = https://github.com/qt/qt5.git
 	branch = dev
+	status = essential
 [submodule "qtwebkit"]
+	depends = qt
 	path = qtwebkit
-	url = https://github.com/izzyonstage/webkit.git
+	url = ../webkit.git
 	branch = qtwebkit-5.212-izzy
+	status = essential
 [submodule "phantomjs"]
+	depends = qt qtwebkit
 	path = phantomjs
 	url = https://github.com/ariya/phantomjs.git
 	branch = master
+	status = essential
