@@ -1,34 +1,34 @@
 [submodule "sqlite"]
 	path = sqlite
 	url = https://github.com/mackyle/sqlite.git
-	branch = master
+	branch = version-3.18.2
 	status = essential
 [submodule "zlib"]
 	path = zlib
 	url = https://github.com/madler/zlib
-	branch = master
+	branch = v1.2.11
 	status = essential
 [submodule "libxml2"]
 	depends = zlib
 	path = libxml2
 	url = https://github.com/GNOME/libxml2.git
-	branch = master
+	branch = v2.9.3
 	status = essential
 [submodule "openssl"]
 	path = openssl
 	url = https://github.com/openssl/openssl.git
-	branch = master
+	branch = OpenSSL_1_0_2-stable
 	status = essential
 [submodule "icu"]
 	path = icu
 	url = https://github.com/qzmfranklin/icu
-	branch = master
+	branch = release-59-1
 	status = essential
 [submodule "qt"]
 	depends = icu openssl zlib sqlite
 	path = qt
 	url = https://github.com/qt/qt5.git
-	branch = dev
+	branch = 5.7.1
 	status = essential
 [submodule "qtwebkit"]
 	depends = qt
