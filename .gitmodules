@@ -1,0 +1,32 @@
+[submodule "sqlite"]
+	path = sqlite
+	url = https://github.com/mackyle/sqlite.git
+	branch = master
+[submodule "zlib"]
+	path = zlib
+	url = https://github.com/madler/zlib
+	branch = master
+[submodule "libxml2"]
+	path = libxml2
+	url = https://github.com/GNOME/libxml2.git
+	branch = master
+[submodule "openssl"]
+	path = openssl
+	url = https://github.com/openssl/openssl.git
+	branch = master
+[submodule "icu"]
+	path = icu
+	url = https://github.com/qzmfranklin/icu
+	branch = master
+[submodule "qt"]
+	path = qt
+	url = https://github.com/qt/qt5.git
+	branch = dev
+[submodule "qtwebkit"]
+	path = qtwebkit
+	url = https://github.com/izzyonstage/webkit.git
+	branch = qtwebkit-5.212-izzy
+[submodule "phantomjs"]
+	path = phantomjs
+	url = https://github.com/ariya/phantomjs.git
+	branch = master
