@@ -128,7 +128,7 @@ PUSHD libxml2\win32
     nmake /f Makefile.msvc clean
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    cscript configure.js compiler=msvc prefix="%LIBXML_DIR%" iconv=no zlib=no xml_debug=no static=yes
+    cscript configure.js compiler=msvc prefix="%LIBXML_DIR%" iconv=no zlib=yes xml_debug=no static=yes
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
     nmake /f Makefile.msvc install
