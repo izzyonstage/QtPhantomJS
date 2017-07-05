@@ -10,12 +10,13 @@ The following are required to be able to use the available build script:
 - Tcl library (ActiveTcl can be downloaded from here: [https://www.activestate.com/activetcl/downloads])
 - Jom (can be found here: [http://download.qt.io/official_releases/jom/jom.zip])
 
-> Ensure all required libraries add their bin folders to the PATH environment variable.
+> Ensure all required libraries add their bin folders to the PATH environment variable (except for Cygwin).
 
 ## Scripts
-build.bat - normal build **(Currently Not Implemented)**
-static_build.bat - statically compiled and linked
-static_runtime_build.bat - statically compiled and linked with static runtime linkage **(Currently Not Implemented)**
+The following scripts can be used to build the required version of QtPhantomJS.
+- build.bat - normal build **(Currently Not Implemented)**
+- static_build.bat - statically compiled and linked
+- static_runtime_build.bat - statically compiled and linked with static runtime linkage **(Currently Not Implemented)**
 
 ## Usage
 To run the build open a command prompt and execute the following command:
