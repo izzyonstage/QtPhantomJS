@@ -38,6 +38,9 @@ PUSHD %WD%
 
     CALL :BUILD_PHANTOMJS
     IF %ERRORLEVEL% NEQ 0 GOTO :ERROR
+
+	CALL :PACKAGE_OUTPUT
+	IF %ERRORLEVEL% NEQ 0 GOTO :ERROR
 POPD
 ECHO Build process completed
 GOTO:EOF
@@ -318,4 +321,11 @@ PUSHD phantomjs
         EXIT /B 1
     )
 POPD
+GOTO:EOF
+
+
+
+:PACKAGE_OUTPUT:
+ECHO Packaging Output...
+CALL 7z a phantomjs.zip .\phantomjs\bin\*
 GOTO:EOF
