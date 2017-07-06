@@ -58,7 +58,7 @@ IF "%programfiles(x86)%" NEQ "" SET "PROG32_ROOT=%programfiles(x86)%"
 SET "VS2015=%PROG32_ROOT%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
 IF [%VisualStudioVersion%] NEQ [14.0] (
     "%VS2015%" x86
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 )
 GOTO:EOF
 
@@ -85,7 +85,7 @@ SET "SQLITE_DIR=%WD%output\sqlite"
 IF NOT EXIST %SQLITE_DIR% MKDIR %SQLITE_DIR%
 PUSHD output\sqlite
     CALL nmake /f "%WD%sqlite\Makefile.msc" libsqlite3.lib TOP="%WD%sqlite" NO_TCL=1 USE_CRT_DLL=1 LIBTCL=tcl86t.lib
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
 	IF NOT EXIST "%SQLITE_DIR%\libsqlite3.lib" (
         ECHO QtBase Build Failed - Missing libsqlite3.lib
@@ -107,22 +107,22 @@ SET "ZLIB_LIBS=%ZLIB_BUILD_DIR%\lib"
 SET "ZLIB_BINS=%ZLIB_BUILD_DIR%\bin"
 PUSHD zlib
     CALL nmake /f win32/Makefile.msc clean
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL nmake /f win32/Makefile.msc
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     REM copies zlib.lib & zdll.lib
     CALL xcopy "%WD%zlib\*.lib" "%ZLIB_LIBS%" /I /Q /Y
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     REM Copies zlib1.dll
     CALL xcopy "%WD%zlib\*.dll" "%ZLIB_BINS%" /I /Q /Y
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     REM Copies root header files
     CALL xcopy "%WD%zlib\*.h" "%ZLIB_INCS%" /I /Q /Y
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
 	IF NOT EXIST "%ZLIB_LIBS%\zlib.lib" (
         ECHO QtBase Build Failed - Missing zlib.lib
@@ -141,13 +141,13 @@ ECHO Building Libxml2...
 SET "LIBXML_DIR=%WD%output\libxml2"
 PUSHD libxml2\win32
     CALL nmake /f Makefile.msvc clean
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL cscript configure.js compiler=msvc prefix="%LIBXML_DIR%" iconv=no zlib=yes xml_debug=no static=yes
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL nmake /f Makefile.msvc install
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
 	IF NOT EXIST "%LIBXML_DIR%\lib\libxml2_a.lib" (
         ECHO QtBase Build Failed - Missing libxml2_a.lib
@@ -168,23 +168,23 @@ SET "PATH=%PATH%;%WD%nasm"
 PUSHD openssl
     IF EXIST ms\ntdll.mak (
         CALL nmake -f ms\nt.mak clean
-        IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+        IF %ERRORLEVEL% NEQ 0 EXIT /B 1
     )
 
     CALL perl Configure VC-WIN32 no-asm no-shared --prefix="%OPENSSL_DIR%" --openssldir="%OPENSSL_DIR%\ssl"
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL ms\do_ms.bat
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL nmake -f ms\nt.mak
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL nmake -f ms\nt.mak test
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL nmake -f ms\nt.mak install
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
 	IF NOT EXIST "%OPENSSL_DIR%\lib\ssleay32.lib" (
         ECHO QtBase Build Failed - Missing ssleay32.lib
@@ -205,23 +205,23 @@ PUSHD icu\source
     SET "PATH=%PATH%;%CYGWIN_INSTALL_DIR%"
 
     FOR /F "delims=" %%a IN ('cygpath -p -u "%ICU_DIR%"') DO @SET "INSTALL_DIR_CYGWIN=%%a"
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL dos2unix *
     CALL dos2unix -f configure
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL bash runConfigureICU Cygwin/MSVC -prefix="%INSTALL_DIR_CYGWIN%" --enable-static --disable-shared
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL make
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL make check
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL make install
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL SET "PATH=%%PATH:;%CYGWIN_INSTALL_DIR%=%%"
 
@@ -253,10 +253,10 @@ PUSHD qt
  -nomake tools -nomake examples -nomake tests^
  -openssl-linked OPENSSL_LIBS="-lws2_32 -lgdi32 -ladvapi32 -lcrypt32 -luser32 -llibeay32 -lssleay32"^
  -prefix "%QT_DIR%" -platform win32-msvc2015
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL jom install
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     IF NOT EXIST "%QT_DIR%\lib\Qt5Widgets.lib" (
         ECHO QtBase Build Failed - Missing Qt5Widgets.lib
@@ -315,11 +315,11 @@ PUSHD qtwebkit
  -DSQLITE_LIBRARIES="%SQLITE_DIR%\libsqlite3.lib" -DSQLITE_INCLUDE_DIR="%SQLITE_DIR%"^
  -DLIBXML2_LIBRARIES="%LIBXML_DIR%\lib\libxml2_a.lib" -DLIBXML2_INCLUDE_DIR="%LIBXML_DIR%\include"^
  -DCMAKE_PREFIX_PATH="%QT_DIR%" -G "NMake Makefiles JOM"
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     ECHO Compiling QtWebKit...
 	CALL jom install
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     IF NOT EXIST "%QT_DIR%\lib\Qt5WebKitWidgets.lib" (
         ECHO QtWebKit Build Failed - Missing Qt5WebKitWidgets.lib
@@ -336,10 +336,10 @@ PUSHD phantomjs
     SET "WEB_INSPECTOR_RESOURCES_DIR=%WD%qtwebkit\DerivedSources\WebInspectorUI"
 
     CALL qmake
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL jom
-    IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+    IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     IF NOT EXIST bin\phantomjs.exe (
         ECHO PhantomJS Build Failed - Missing phantomjs.exe
