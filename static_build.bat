@@ -81,7 +81,7 @@ ECHO Building Sqlite...
 SET "SQLITE_DIR=%WD%output\sqlite"
 IF NOT EXIST %SQLITE_DIR% MKDIR %SQLITE_DIR%
 PUSHD output\sqlite
-    nmake /f "%WD%sqlite\Makefile.msc" libsqlite3.lib TOP="%WD%sqlite" NO_TCL=1 USE_CRT_DLL=1 LIBTCL=tcl86t.lib
+    CALL nmake /f "%WD%sqlite\Makefile.msc" libsqlite3.lib TOP="%WD%sqlite" NO_TCL=1 USE_CRT_DLL=1 LIBTCL=tcl86t.lib
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 POPD
 SET "PATH=%SQLITE_DIR%;%PATH%"
@@ -98,22 +98,22 @@ SET "ZLIB_INCS=%ZLIB_BUILD_DIR%\include"
 SET "ZLIB_LIBS=%ZLIB_BUILD_DIR%\lib"
 SET "ZLIB_BINS=%ZLIB_BUILD_DIR%\bin"
 PUSHD zlib
-    nmake /f win32/Makefile.msc clean
+    CALL nmake /f win32/Makefile.msc clean
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    nmake /f win32/Makefile.msc
+    CALL nmake /f win32/Makefile.msc
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
     REM copies zlib.lib & zdll.lib
-    xcopy "%WD%zlib\*.lib" "%ZLIB_LIBS%" /I /Q /Y
+    CALL xcopy "%WD%zlib\*.lib" "%ZLIB_LIBS%" /I /Q /Y
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
     REM Copies zlib1.dll
-    xcopy "%WD%zlib\*.dll" "%ZLIB_BINS%" /I /Q /Y
+    CALL xcopy "%WD%zlib\*.dll" "%ZLIB_BINS%" /I /Q /Y
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
     REM Copies root header files
-    xcopy "%WD%zlib\*.h" "%ZLIB_INCS%" /I /Q /Y
+    CALL xcopy "%WD%zlib\*.h" "%ZLIB_INCS%" /I /Q /Y
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 POPD
 SET "PATH=%ZLIB_BINS%;%PATH%"
@@ -127,13 +127,13 @@ GOTO:EOF
 ECHO Building Libxml2...
 SET "LIBXML_DIR=%WD%output\libxml2"
 PUSHD libxml2\win32
-    nmake /f Makefile.msvc clean
+    CALL nmake /f Makefile.msvc clean
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    cscript configure.js compiler=msvc prefix="%LIBXML_DIR%" iconv=no zlib=yes xml_debug=no static=yes
+    CALL cscript configure.js compiler=msvc prefix="%LIBXML_DIR%" iconv=no zlib=yes xml_debug=no static=yes
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    nmake /f Makefile.msvc install
+    CALL nmake /f Makefile.msvc install
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 POPD
 SET "PATH=%LIBXML_DIR%\bin;%PATH%"
@@ -149,23 +149,23 @@ SET "OPENSSL_DIR=%WD%output\openssl"
 SET "PATH=%PATH%;%WD%nasm"
 PUSHD openssl
     IF EXIST ms\ntdll.mak (
-        nmake -f ms\nt.mak clean
+        CALL nmake -f ms\nt.mak clean
         IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
     )
 
-    perl Configure VC-WIN32 no-asm no-shared --prefix="%OPENSSL_DIR%" --openssldir="%OPENSSL_DIR%\ssl"
+    CALL perl Configure VC-WIN32 no-asm no-shared --prefix="%OPENSSL_DIR%" --openssldir="%OPENSSL_DIR%\ssl"
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
     CALL ms\do_ms.bat
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    nmake -f ms\nt.mak
+    CALL nmake -f ms\nt.mak
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    nmake -f ms\nt.mak test
+    CALL nmake -f ms\nt.mak test
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    nmake -f ms\nt.mak install
+    CALL nmake -f ms\nt.mak install
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 POPD
 SET "PATH=%OPENSSL_DIR%\bin;%PATH%"
@@ -184,20 +184,20 @@ PUSHD icu\source
     FOR /F "delims=" %%a IN ('cygpath -p -u "%ICU_DIR%"') DO @SET "INSTALL_DIR_CYGWIN=%%a"
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    dos2unix *
-    dos2unix -f configure
+    CALL dos2unix *
+    CALL dos2unix -f configure
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    bash runConfigureICU Cygwin/MSVC -prefix="%INSTALL_DIR_CYGWIN%" --enable-static --disable-shared
+    CALL bash runConfigureICU Cygwin/MSVC -prefix="%INSTALL_DIR_CYGWIN%" --enable-static --disable-shared
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    make
+    CALL make
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    make check
+    CALL make check
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    make install
+    CALL make install
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
     CALL SET "PATH=%%PATH:;%CYGWIN_INSTALL_DIR%=%%"
@@ -227,7 +227,7 @@ PUSHD qt
  -prefix "%QT_DIR%" -platform win32-msvc2015
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    jom install
+    CALL jom install
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
     IF NOT EXIST "%QT_DIR%\lib\Qt5Widgets.lib" (
@@ -247,7 +247,7 @@ GOTO:EOF
 :BUILD_QWEBKIT:
 ECHO Building QtWebKit...
 PUSHD qtwebkit
-    cmake^
+    CALL cmake^
  -DPORT="Qt" -DCMAKE_BUILD_TYPE=Release -Wno-dev -DDEVELOPER_MODE=OFF --no-warn-unused-cli^
  -DENABLE_3D_TRANSFORMS=ON -DENABLE_ACCELERATED_2D_CANVAS=ON -DENABLE_ALLINONE_BUILD=ON^
  -DENABLE_ES6_ARROWFUNCTION_SYNTAX=ON -DENABLE_ATTACHMENT_ELEMENT=OFF -DENABLE_BATTERY_STATUS=OFF^
@@ -290,7 +290,7 @@ PUSHD qtwebkit
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
     ECHO Compiling QtWebKit...
-	jom install
+	CALL jom install
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
     IF NOT EXIST "%QT_DIR%\lib\Qt5WebKitWidgets.lib" (
@@ -307,10 +307,10 @@ ECHO Building PhantomJS...
 PUSHD phantomjs
     SET "WEB_INSPECTOR_RESOURCES_DIR=%WD%qtwebkit\DerivedSources\WebInspectorUI"
 
-    qmake
+    CALL qmake
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-    jom
+    CALL jom
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
     IF NOT EXIST bin\phantomjs.exe (
