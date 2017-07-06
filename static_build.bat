@@ -86,6 +86,11 @@ IF NOT EXIST %SQLITE_DIR% MKDIR %SQLITE_DIR%
 PUSHD output\sqlite
     CALL nmake /f "%WD%sqlite\Makefile.msc" libsqlite3.lib TOP="%WD%sqlite" NO_TCL=1 USE_CRT_DLL=1 LIBTCL=tcl86t.lib
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+
+	IF NOT EXIST "%SQLITE_DIR%\libsqlite3.lib" (
+        ECHO QtBase Build Failed - Missing libsqlite3.lib
+        EXIT /B 1
+    )
 POPD
 SET "PATH=%SQLITE_DIR%;%PATH%"
 SET "LIB=%SQLITE_DIR%;%LIB%"
@@ -118,6 +123,11 @@ PUSHD zlib
     REM Copies root header files
     CALL xcopy "%WD%zlib\*.h" "%ZLIB_INCS%" /I /Q /Y
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+
+	IF NOT EXIST "%ZLIB_LIBS%\zlib.lib" (
+        ECHO QtBase Build Failed - Missing zlib.lib
+        EXIT /B 1
+    )
 POPD
 SET "PATH=%ZLIB_BINS%;%PATH%"
 SET "LIB=%ZLIB_LIBS%;%LIB%"
@@ -138,6 +148,11 @@ PUSHD libxml2\win32
 
     CALL nmake /f Makefile.msvc install
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+
+	IF NOT EXIST "%LIBXML_DIR%\lib\libxml2_a.lib" (
+        ECHO QtBase Build Failed - Missing libxml2_a.lib
+        EXIT /B 1
+    )
 POPD
 SET "PATH=%LIBXML_DIR%\bin;%PATH%"
 SET "LIB=%LIBXML_DIR%\lib;%LIB%"
@@ -170,6 +185,11 @@ PUSHD openssl
 
     CALL nmake -f ms\nt.mak install
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+
+	IF NOT EXIST "%OPENSSL_DIR%\lib\ssleay32.lib" (
+        ECHO QtBase Build Failed - Missing ssleay32.lib
+        EXIT /B 1
+    )
 POPD
 SET "PATH=%OPENSSL_DIR%\bin;%PATH%"
 SET "LIB=%OPENSSL_DIR%\lib;%LIB%"
@@ -204,6 +224,11 @@ PUSHD icu\source
     IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
     CALL SET "PATH=%%PATH:;%CYGWIN_INSTALL_DIR%=%%"
+
+	IF NOT EXIST "%ICU_DIR%\lib\sicuin.lib" (
+        ECHO QtBase Build Failed - Missing sicuin.lib
+        EXIT /B 1
+    )
 POPD
 SET "PATH=%ICU_DIR%\bin;%PATH%"
 SET "LIB=%ICU_DIR%\lib;%LIB%"
