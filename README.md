@@ -8,7 +8,6 @@ The following are required to be able to use the available build script:
 - Microsoft Visual C build tools (version depends on branch)
 - cygwin (with dos2unix, make, bash; required to build ICU library from source; ensure this is not added to the PATH environment variable as the build script will add it as required)
 - Tcl library (ActiveTcl can be downloaded from here: [https://www.activestate.com/activetcl/downloads])
-- Jom (can be found here: [http://download.qt.io/official_releases/jom/jom.zip])
 
 > Ensure all required libraries add their bin folders to the PATH environment variable (except for Cygwin).
 

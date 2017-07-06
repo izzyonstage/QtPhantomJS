@@ -70,6 +70,8 @@ ECHO Mapping Tcl...
 SET "PATH=%PATH%;%TCL_INSTALL_DIR%\bin"
 SET "LIB=%TCL_INSTALL_DIR%\lib;%LIB%"
 SET "INCLUDE=%TCL_INSTALL_DIR%\include;%INCLUDE%"
+ECHO Mapping Jom...
+SET "PATH=%WD%tools\jom;%PATH%"
 GOTO:EOF
 
 

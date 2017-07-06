@@ -30,6 +30,7 @@
 *.exe
 *.out
 *.app
+!tools/jom/jom.exe
 
 # Build birectories
 **/bin/
