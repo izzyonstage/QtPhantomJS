@@ -11,7 +11,6 @@ REM ##########################################
 REM ###### end of configuration section ######
 REM ##########################################
 
-SET ERRORLEVEL=0
 SET "INITIAL_DIR=%CD%"
 SET "WD=%~dp0"
 SET "PATH=%WD%;%PATH%"
@@ -44,7 +43,7 @@ POPD
 ECHO Build process completed
 GOTO:EOF
 :ERROR:
-ECHO Failed with error #%ERRORLEVEL%.
+ECHO Build Failed
 cd %INITIAL_DIR%
 EXIT /B 1
 
@@ -56,8 +55,7 @@ SET "PROG32_ROOT=%programfiles%"
 IF "%programfiles(x86)%" NEQ "" SET "PROG32_ROOT=%programfiles(x86)%"
 SET "VS2015=%PROG32_ROOT%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
 IF [%VisualStudioVersion%] NEQ [14.0] (
-    CALL "%VS2015%" x86 || EXIT /B 1
-	IF [%VisualStudioVersion%] NEQ [14.0] EXIT /B 1
+    "%VS2015%" x86
 )
 GOTO:EOF
 
@@ -133,8 +131,6 @@ GOTO:EOF
 ECHO Building Libxml2...
 SET "LIBXML_DIR=%WD%output\libxml2"
 PUSHD libxml2\win32
-    CALL nmake /f Makefile.msvc clean || EXIT /B 1
-
     CALL cscript configure.js compiler=msvc prefix="%LIBXML_DIR%" iconv=no zlib=yes xml_debug=no static=yes || EXIT /B 1
 
     CALL nmake /f Makefile.msvc install || EXIT /B 1
@@ -156,17 +152,11 @@ ECHO Building OpenSSL...
 SET "OPENSSL_DIR=%WD%output\openssl"
 SET "PATH=%PATH%;%WD%nasm"
 PUSHD openssl
-    IF EXIST ms\ntdll.mak (
-        CALL nmake -f ms\nt.mak clean || EXIT /B 1
-    )
-
     CALL perl Configure VC-WIN32 no-asm no-shared --prefix="%OPENSSL_DIR%" --openssldir="%OPENSSL_DIR%\ssl" || EXIT /B 1
 
     CALL ms\do_ms.bat || EXIT /B 1
 
     CALL nmake -f ms\nt.mak || EXIT /B 1
-
-    CALL nmake -f ms\nt.mak test || EXIT /B 1
 
     CALL nmake -f ms\nt.mak install || EXIT /B 1
 
@@ -188,7 +178,7 @@ SET "ICU_DIR=%WD%output\icu"
 PUSHD icu\source
     SET "PATH=%PATH%;%CYGWIN_INSTALL_DIR%"
 
-    FOR /F "delims=" %%a IN ('cygpath -p -u "%ICU_DIR%"') DO @SET "INSTALL_DIR_CYGWIN=%%a"
+    FOR /F "delims=" %%a IN ('cygpath -p -u "%ICU_DIR%"') DO SET "INSTALL_DIR_CYGWIN=%%a"
     IF %ERRORLEVEL% NEQ 0 EXIT /B 1
 
     CALL dos2unix * || EXIT /B 1
@@ -197,8 +187,6 @@ PUSHD icu\source
     CALL bash runConfigureICU Cygwin/MSVC -prefix="%INSTALL_DIR_CYGWIN%" --enable-static --disable-shared || EXIT /B 1
 
     CALL make || EXIT /B 1
-
-    CALL make check || EXIT /B 1
 
     CALL make install || EXIT /B 1
 
