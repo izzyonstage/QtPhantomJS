@@ -76,10 +76,14 @@ GOTO:EOF
 
 :BUILD_SQLITE:
 ECHO Building Sqlite...
+CALL powershell -Command "Invoke-WebRequest https://www.sqlite.org/src/zip/sqlite.zip -OutFile sqlite.zip" || EXIT /B 1
+CALL 7z x sqlite.zip -y || EXIT /B 1
+DEL sqlite.zip || EXIT /B 1
+
 SET "SQLITE_DIR=%WD%output\sqlite"
 IF NOT EXIST %SQLITE_DIR% MKDIR %SQLITE_DIR%
-PUSHD output\sqlite
-    CALL nmake /f "%WD%sqlite\Makefile.msc" libsqlite3.lib TOP="%WD%sqlite" NO_TCL=1 USE_CRT_DLL=1 LIBTCL=tcl86t.lib || EXIT /B 1
+PUSHD %SQLITE_DIR%
+	CALL nmake /f "%WD%sqlite\Makefile.msc" libsqlite3.lib TOP="%WD%sqlite" NO_TCL=1 USE_CRT_DLL=1 LIBTCL=tcl86t.lib || EXIT /B 1
 
 	IF NOT EXIST "%SQLITE_DIR%\libsqlite3.lib" (
         ECHO QtBase Build Failed - Missing libsqlite3.lib
