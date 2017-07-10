@@ -18,6 +18,8 @@ PUSHD %WD%
     CALL :LAUNCH_VISUAL_STUDIO || GOTO :ERROR
 
     CALL :CONFIGURE_PATHS || GOTO :ERROR
+	
+	CALL :APPLY_PATCHES || GOTO :ERROR
 
     IF EXIST output RMDIR /S /Q "%WD%output" || GOTO :ERROR
     MKDIR output || GOTO :ERROR
@@ -68,6 +70,8 @@ SET "LIB=%TCL_INSTALL_DIR%\lib;%LIB%"
 SET "INCLUDE=%TCL_INSTALL_DIR%\include;%INCLUDE%"
 ECHO Mapping Jom...
 SET "PATH=%WD%tools\jom;%PATH%"
+ECHO Mapping Patch...
+SET "PATH=%WD%tools\patch\bin;%PATH%"
 GOTO:EOF
 
 
@@ -314,4 +318,20 @@ GOTO:EOF
 :PACKAGE_OUTPUT:
 ECHO Packaging Output...
 CALL 7z a phantomjs.zip .\phantomjs\bin\*
+GOTO:EOF
+
+
+
+:APPLY_PATCHES:
+SETLOCAL EnableDelayedExpansion
+SET "PATCHES_ROOT=%WD%\patches"
+PUSHD %PATCHES_ROOT%
+    ECHO detecting patches...
+	FOR /f %%A IN ('dir /s /b *.patch') DO (
+		SET "PATCH_FILE=%%~A"
+		SET "PATCH_TARGET=!PATCH_FILE:%%~nxA=%%~nA!"
+        SET "PATCH_TARGET=!PATCH_TARGET:\patches\=\!"
+		CALL patch "!PATCH_TARGET!" "!PATCH_FILE!" || EXIT /B 1
+	)
+POPD
 GOTO:EOF
