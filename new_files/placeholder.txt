@@ -1,2 +1,2 @@
-Put any custom patch files in here following the same path to the original file as these will be applied based on their path.
-Also ensure that the patch file name is the same as the file it is patching + ".patch".
+Put any custom files in this directory using the same path structure based on where you wish the files to be deployed to during the build process.
+This is equivalent to removing the root folder name ("new_files") from the path.
