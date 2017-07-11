@@ -19,9 +19,9 @@ PUSHD %WD%
 
     CALL :CONFIGURE_PATHS || GOTO :ERROR
 
-	CALL :APPLY_PATCHES || GOTO :ERROR
-
 	CALL :DEPLOY_NEW_FILES || GOTO :ERROR
+
+	CALL :APPLY_PATCHES || GOTO :ERROR
 
     IF EXIST output RMDIR /S /Q "%WD%output" || GOTO :ERROR
     MKDIR output || GOTO :ERROR
@@ -329,7 +329,7 @@ SETLOCAL EnableDelayedExpansion
 SET "PATCHES_ROOT=%WD%\patches"
 PUSHD %PATCHES_ROOT%
     ECHO detecting patches...
-	FOR /f %%A IN ('dir /s /b *.patch') DO (
+	FOR /f %%A IN ('dir /s /b /a:-d *.patch') DO (
 		SET "PATCH_FILE=%%~A"
 		SET "PATCH_TARGET=!PATCH_FILE:%%~nxA=%%~nA!"
         SET "PATCH_TARGET=!PATCH_TARGET:\patches\=\!"
@@ -346,11 +346,10 @@ SETLOCAL EnableDelayedExpansion
 SET "FILES_ROOT=%WD%\new_files"
 PUSHD %FILES_ROOT%
     ECHO extracting new files...
-	FOR /f %%A IN ('dir /s /b *.*') DO (
-		SET "PATCH_FILE=%%~A"
+	FOR /f %%A IN ('dir /s /b /a:-d *.*') DO (
 		SET "PATCH_TARGET=%%~dpA"
-        SET "PATCH_TARGET=!PATCH_TARGET:\patches\=\!"
-		CALL xcopy "!PATCH_FILE!" "!PATCH_TARGET!" /I /Q /Y || EXIT /B 1
+        SET "PATCH_TARGET=!PATCH_TARGET:\new_files\=\!"
+		CALL xcopy "%%~A" "!PATCH_TARGET!" /I /Q /Y || EXIT /B 1
 	)
 POPD
 ENDLOCAL
