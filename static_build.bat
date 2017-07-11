@@ -18,8 +18,10 @@ PUSHD %WD%
     CALL :LAUNCH_VISUAL_STUDIO || GOTO :ERROR
 
     CALL :CONFIGURE_PATHS || GOTO :ERROR
-	
+
 	CALL :APPLY_PATCHES || GOTO :ERROR
+
+	CALL :DEPLOY_NEW_FILES || GOTO :ERROR
 
     IF EXIST output RMDIR /S /Q "%WD%output" || GOTO :ERROR
     MKDIR output || GOTO :ERROR
@@ -334,4 +336,22 @@ PUSHD %PATCHES_ROOT%
 		CALL patch "!PATCH_TARGET!" "!PATCH_FILE!" || EXIT /B 1
 	)
 POPD
+ENDLOCAL
+GOTO:EOF
+
+
+
+:DEPLOY_NEW_FILES:
+SETLOCAL EnableDelayedExpansion
+SET "FILES_ROOT=%WD%\new_files"
+PUSHD %FILES_ROOT%
+    ECHO extracting new files...
+	FOR /f %%A IN ('dir /s /b *.*') DO (
+		SET "PATCH_FILE=%%~A"
+		SET "PATCH_TARGET=%%~dpA"
+        SET "PATCH_TARGET=!PATCH_TARGET:\patches\=\!"
+		CALL xcopy "!PATCH_FILE!" "!PATCH_TARGET!" /I /Q /Y || EXIT /B 1
+	)
+POPD
+ENDLOCAL
 GOTO:EOF

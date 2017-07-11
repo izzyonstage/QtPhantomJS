@@ -1,0 +1,2 @@
+Put any custom patch files in here following the same path to the original file as these will be applied based on their path.
+Also ensure that the patch file name is the same as the file it is patching + ".patch".
