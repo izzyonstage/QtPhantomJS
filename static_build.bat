@@ -295,6 +295,7 @@ PUSHD qtwebkit
         EXIT /B 1
     )
 POPD
+SET "INCLUDE=%WD%qtwebkit\Source;%INCLUDE%"
 GOTO:EOF
 
 
@@ -319,7 +320,16 @@ GOTO:EOF
 
 :PACKAGE_OUTPUT:
 ECHO Packaging Output...
-CALL 7z a phantomjs.zip .\phantomjs\bin\*
+PUSHD phantomjs
+    IF NOT EXIST package MKDIR package
+    IF NOT EXIST package\bin MKDIR package\bin
+    CALL xcopy bin\phantomjs.exe package\bin /I /Q /Y || EXIT /B 1
+    CALL xcopy ChangeLog package /I /Q /Y || EXIT /B 1
+    CALL xcopy LICENSE.BSD package /I /Q /Y || EXIT /B 1
+    CALL xcopy README.md package /I /Q /Y || EXIT /B 1
+    CALL xcopy third-party.txt package /I /Q /Y || EXIT /B 1
+POPD
+CALL 7z a phantomjs.zip .\phantomjs\package\* || EXIT /B 1
 GOTO:EOF
 
 
