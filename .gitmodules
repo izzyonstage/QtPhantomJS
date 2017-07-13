@@ -31,9 +31,3 @@
 	url = ../webkit.git
 	branch = qtwebkit-5.212-izzy
 	status = essential
-[submodule "phantomjs"]
-	depends = qt qtwebkit
-	path = phantomjs
-	url = https://github.com/izzyonstage/phantomjs.git
-	branch = 2.1-custom
-	status = essential
