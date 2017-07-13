@@ -362,5 +362,5 @@ PUSHD phantomjs
     CALL xcopy third-party.txt package /I /Q /Y || EXIT /B 1
 	CALL xcopy deploy\A2I.PhantomJS.nuspec package /I /Q /Y || EXIT /B 1
 POPD
-CALL 7z a phantomjs.zip .\phantomjs\package\* || EXIT /B 1
+CALL 7z a -tzip phantomjs.nupkg .\phantomjs\package\* || EXIT /B 1
 GOTO:EOF
