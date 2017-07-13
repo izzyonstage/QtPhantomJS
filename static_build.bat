@@ -40,9 +40,9 @@ PUSHD %WD%
 
     CALL :BUILD_QWEBKIT || GOTO :ERROR
 
-    CALL :BUILD_PHANTOMJS || GOTO :ERROR
+    REM CALL :BUILD_PHANTOMJS || GOTO :ERROR
 
-	CALL :PACKAGE_OUTPUT || GOTO :ERROR
+	REM CALL :PACKAGE_OUTPUT || GOTO :ERROR
 POPD
 ECHO Build process completed
 GOTO:EOF
@@ -74,6 +74,38 @@ ECHO Mapping Jom...
 SET "PATH=%WD%tools\jom;%PATH%"
 ECHO Mapping Patch...
 SET "PATH=%WD%tools\patch\bin;%PATH%"
+GOTO:EOF
+
+
+
+:DEPLOY_NEW_FILES:
+SETLOCAL EnableDelayedExpansion
+SET "FILES_ROOT=%WD%\new_files"
+PUSHD %FILES_ROOT%
+    ECHO extracting new files...
+	FOR /f %%A IN ('dir /s /b /a:-d *.*') DO (
+		SET "FILE_TARGET=%%~dpA"
+        SET "FILE_TARGET=!FILE_TARGET:\new_files\=\!"
+		CALL xcopy "%%~A" "!FILE_TARGET!" /I /Q /Y || EXIT /B 1
+	)
+POPD
+ENDLOCAL
+GOTO:EOF
+
+
+
+:APPLY_PATCHES:
+SETLOCAL EnableDelayedExpansion
+SET "PATCHES_ROOT=%WD%\patches"
+PUSHD %PATCHES_ROOT%
+    ECHO detecting patches...
+	FOR /f %%A IN ('dir /s /b /a:-d *.patch') DO (
+		SET "PATCH_TARGET=%%~dpnA"
+        SET "PATCH_TARGET=!PATCH_TARGET:\patches\=\!"
+		CALL patch "!PATCH_TARGET!" "%%~A" || EXIT /B 1
+	)
+POPD
+ENDLOCAL
 GOTO:EOF
 
 
@@ -328,39 +360,7 @@ PUSHD phantomjs
     CALL xcopy LICENSE.BSD package /I /Q /Y || EXIT /B 1
     CALL xcopy README.md package /I /Q /Y || EXIT /B 1
     CALL xcopy third-party.txt package /I /Q /Y || EXIT /B 1
+	CALL xcopy deploy\A2I.PhantomJS.nuspec package /I /Q /Y || EXIT /B 1
 POPD
 CALL 7z a phantomjs.zip .\phantomjs\package\* || EXIT /B 1
-GOTO:EOF
-
-
-
-:APPLY_PATCHES:
-SETLOCAL EnableDelayedExpansion
-SET "PATCHES_ROOT=%WD%\patches"
-PUSHD %PATCHES_ROOT%
-    ECHO detecting patches...
-	FOR /f %%A IN ('dir /s /b /a:-d *.patch') DO (
-		SET "PATCH_FILE=%%~A"
-		SET "PATCH_TARGET=!PATCH_FILE:%%~nxA=%%~nA!"
-        SET "PATCH_TARGET=!PATCH_TARGET:\patches\=\!"
-		CALL patch "!PATCH_TARGET!" "!PATCH_FILE!" || EXIT /B 1
-	)
-POPD
-ENDLOCAL
-GOTO:EOF
-
-
-
-:DEPLOY_NEW_FILES:
-SETLOCAL EnableDelayedExpansion
-SET "FILES_ROOT=%WD%\new_files"
-PUSHD %FILES_ROOT%
-    ECHO extracting new files...
-	FOR /f %%A IN ('dir /s /b /a:-d *.*') DO (
-		SET "PATCH_TARGET=%%~dpA"
-        SET "PATCH_TARGET=!PATCH_TARGET:\new_files\=\!"
-		CALL xcopy "%%~A" "!PATCH_TARGET!" /I /Q /Y || EXIT /B 1
-	)
-POPD
-ENDLOCAL
 GOTO:EOF
