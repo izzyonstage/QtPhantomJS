@@ -19,9 +19,9 @@ PUSHD %WD%
 
     CALL :CONFIGURE_PATHS || GOTO :ERROR
 
-	CALL :DEPLOY_NEW_FILES || GOTO :ERROR
+    CALL :DEPLOY_NEW_FILES || GOTO :ERROR
 
-	CALL :APPLY_PATCHES || GOTO :ERROR
+    CALL :APPLY_PATCHES || GOTO :ERROR
 
     IF EXIST output RMDIR /S /Q "%WD%output" || GOTO :ERROR
     MKDIR output || GOTO :ERROR
@@ -40,9 +40,9 @@ PUSHD %WD%
 
     CALL :BUILD_QWEBKIT || GOTO :ERROR
 
-    REM CALL :BUILD_PHANTOMJS || GOTO :ERROR
+    CALL :BUILD_PHANTOMJS || GOTO :ERROR
 
-	REM CALL :PACKAGE_OUTPUT || GOTO :ERROR
+    CALL :PACKAGE_OUTPUT || GOTO :ERROR
 POPD
 ECHO Build process completed
 GOTO:EOF
@@ -83,11 +83,11 @@ SETLOCAL EnableDelayedExpansion
 SET "FILES_ROOT=%WD%\new_files"
 PUSHD %FILES_ROOT%
     ECHO extracting new files...
-	FOR /f %%A IN ('dir /s /b /a:-d *.*') DO (
-		SET "FILE_TARGET=%%~dpA"
+    FOR /f %%A IN ('dir /s /b /a:-d *.*') DO (
+        SET "FILE_TARGET=%%~dpA"
         SET "FILE_TARGET=!FILE_TARGET:\new_files\=\!"
-		CALL xcopy "%%~A" "!FILE_TARGET!" /I /Q /Y || EXIT /B 1
-	)
+        CALL xcopy "%%~A" "!FILE_TARGET!" /I /Q /Y || EXIT /B 1
+    )
 POPD
 ENDLOCAL
 GOTO:EOF
@@ -99,11 +99,11 @@ SETLOCAL EnableDelayedExpansion
 SET "PATCHES_ROOT=%WD%\patches"
 PUSHD %PATCHES_ROOT%
     ECHO detecting patches...
-	FOR /f %%A IN ('dir /s /b /a:-d *.patch') DO (
-		SET "PATCH_TARGET=%%~dpnA"
+    FOR /f %%A IN ('dir /s /b /a:-d *.patch') DO (
+        SET "PATCH_TARGET=%%~dpnA"
         SET "PATCH_TARGET=!PATCH_TARGET:\patches\=\!"
-		CALL patch "!PATCH_TARGET!" "%%~A" || EXIT /B 1
-	)
+        CALL patch "!PATCH_TARGET!" "%%~A" || EXIT /B 1
+    )
 POPD
 ENDLOCAL
 GOTO:EOF
@@ -119,9 +119,9 @@ DEL sqlite.zip || EXIT /B 1
 SET "SQLITE_DIR=%WD%output\sqlite"
 IF NOT EXIST %SQLITE_DIR% MKDIR %SQLITE_DIR%
 PUSHD %SQLITE_DIR%
-	CALL nmake /f "%WD%sqlite\Makefile.msc" libsqlite3.lib TOP="%WD%sqlite" NO_TCL=1 USE_CRT_DLL=1 LIBTCL=tcl86t.lib || EXIT /B 1
+    CALL nmake /f "%WD%sqlite\Makefile.msc" libsqlite3.lib TOP="%WD%sqlite" NO_TCL=1 USE_CRT_DLL=1 LIBTCL=tcl86t.lib || EXIT /B 1
 
-	IF NOT EXIST "%SQLITE_DIR%\libsqlite3.lib" (
+    IF NOT EXIST "%SQLITE_DIR%\libsqlite3.lib" (
         ECHO QtBase Build Failed - Missing libsqlite3.lib
         EXIT /B 1
     )
@@ -153,7 +153,7 @@ PUSHD zlib
     REM Copies root header files
     CALL xcopy "%WD%zlib\*.h" "%ZLIB_INCS%" /I /Q /Y || EXIT /B 1
 
-	IF NOT EXIST "%ZLIB_LIBS%\zlib.lib" (
+    IF NOT EXIST "%ZLIB_LIBS%\zlib.lib" (
         ECHO QtBase Build Failed - Missing zlib.lib
         EXIT /B 1
     )
@@ -173,7 +173,7 @@ PUSHD libxml2\win32
 
     CALL nmake /f Makefile.msvc install || EXIT /B 1
 
-	IF NOT EXIST "%LIBXML_DIR%\lib\libxml2_a.lib" (
+    IF NOT EXIST "%LIBXML_DIR%\lib\libxml2_a.lib" (
         ECHO QtBase Build Failed - Missing libxml2_a.lib
         EXIT /B 1
     )
@@ -198,7 +198,7 @@ PUSHD openssl
 
     CALL nmake -f ms\nt.mak install || EXIT /B 1
 
-	IF NOT EXIST "%OPENSSL_DIR%\lib\ssleay32.lib" (
+    IF NOT EXIST "%OPENSSL_DIR%\lib\ssleay32.lib" (
         ECHO QtBase Build Failed - Missing ssleay32.lib
         EXIT /B 1
     )
@@ -230,7 +230,7 @@ PUSHD icu\source
 
     CALL SET "PATH=%%PATH:;%CYGWIN_INSTALL_DIR%=%%"
 
-	IF NOT EXIST "%ICU_DIR%\lib\sicuin.lib" (
+    IF NOT EXIST "%ICU_DIR%\lib\sicuin.lib" (
         ECHO QtBase Build Failed - Missing sicuin.lib
         EXIT /B 1
     )
@@ -320,7 +320,7 @@ PUSHD qtwebkit
  -DCMAKE_PREFIX_PATH="%QT_DIR%" -G "NMake Makefiles JOM" || EXIT /B 1
 
     ECHO Compiling QtWebKit...
-	CALL jom install || EXIT /B 1
+    CALL jom install || EXIT /B 1
 
     IF NOT EXIST "%QT_DIR%\lib\Qt5WebKitWidgets.lib" (
         ECHO QtWebKit Build Failed - Missing Qt5WebKitWidgets.lib
@@ -360,7 +360,7 @@ PUSHD phantomjs
     CALL xcopy LICENSE.BSD package /I /Q /Y || EXIT /B 1
     CALL xcopy README.md package /I /Q /Y || EXIT /B 1
     CALL xcopy third-party.txt package /I /Q /Y || EXIT /B 1
-	CALL xcopy deploy\A2I.PhantomJS.nuspec package /I /Q /Y || EXIT /B 1
+    CALL xcopy deploy\A2I.PhantomJS.nuspec package /I /Q /Y || EXIT /B 1
 POPD
 CALL 7z a -tzip phantomjs.nupkg .\phantomjs\package\* || EXIT /B 1
 GOTO:EOF
