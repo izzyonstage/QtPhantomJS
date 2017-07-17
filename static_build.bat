@@ -102,7 +102,7 @@ PUSHD %PATCHES_ROOT%
     FOR /f %%A IN ('dir /s /b /a:-d *.patch') DO (
         SET "PATCH_TARGET=%%~dpnA"
         SET "PATCH_TARGET=!PATCH_TARGET:\patches\=\!"
-        CALL patch "!PATCH_TARGET!" "%%~A" || EXIT /B 1
+        CALL patch --posix --forward "!PATCH_TARGET!" "%%~A" || EXIT /B 1
     )
 POPD
 ENDLOCAL
