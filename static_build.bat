@@ -85,8 +85,7 @@ PUSHD %FILES_ROOT%
     ECHO extracting new files...
     FOR /f %%A IN ('dir /s /b /a:-d *.*') DO (
         SET "FILE_TARGET=%%~dpA"
-        SET "FILE_TARGET=!FILE_TARGET:\new_files\=\!"
-        CALL xcopy "%%~A" "!FILE_TARGET!" /I /Q /Y || EXIT /B 1
+        CALL xcopy "%%~A" "!FILE_TARGET:\new_files\=\!" /I /Q /Y || EXIT /B 1
     )
 POPD
 ENDLOCAL
@@ -101,8 +100,7 @@ PUSHD %PATCHES_ROOT%
     ECHO detecting patches...
     FOR /f %%A IN ('dir /s /b /a:-d *.patch') DO (
         SET "PATCH_TARGET=%%~dpnA"
-        SET "PATCH_TARGET=!PATCH_TARGET:\patches\=\!"
-        CALL patch --posix --forward "!PATCH_TARGET!" "%%~A" || EXIT /B 1
+        CALL patch --posix --forward "!PATCH_TARGET:\patches\=\!" "%%~A" || EXIT /B 1
     )
 POPD
 ENDLOCAL
